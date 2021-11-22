@@ -20,7 +20,6 @@ public class RequestParser {
         request.setMethod(HttpMethod.valueOf(startLine[0].trim()));
         request.setUri(startLine[1].trim());
         request.setVersion(startLine[2].trim());
-        System.out.println(request.getUri());
     }
 
     private static void injectHeaders(BufferedReader bufferedReader, Request request) throws IOException {
@@ -32,9 +31,6 @@ public class RequestParser {
                 break;
             }
             headersMap.put(header[0].trim(), header[1].trim());
-        }
-        for (Map.Entry<String, String> stringStringEntry : headersMap.entrySet()) {
-            System.out.println(stringStringEntry);
         }
         request.setHeaders(headersMap);
     }

@@ -22,7 +22,9 @@ public class RequestHandler {
     public void handle() throws IOException {
         Request request = RequestParser.parse(bufferedReader);
         try {
-            String content = ResourceReader.readResource(webappPath, request.getUri());
+            ResourceReader resourceReader = new ResourceReader();
+            resourceReader.setWebappPath(webappPath);
+            String content = resourceReader.readResource(request.getUri());
             ResponseWriter.writeSuccessResponse(content, bufferedWriter);
         } catch (FileNotFoundException e) {
             ResponseWriter.writeNotFoundResponse(bufferedWriter);
