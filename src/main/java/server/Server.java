@@ -30,11 +30,4 @@ public class Server {
     public void setWebappPath(String webappPath) {
         this.webappPath = webappPath;
     }
-
-    public static void main(String[] args) throws IOException {
-        Server server = new Server();
-        server.setPort(3001);
-        server.setWebappPath("src/main/resources/webapp");
-        server.start();
-    }
 }
