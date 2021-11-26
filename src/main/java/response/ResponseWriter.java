@@ -13,7 +13,6 @@ public class ResponseWriter {
         while ((count = content.read(buffer)) != -1) {
             outputStream.write(buffer, 0, count);
         }
-        content.close();
     }
 
     public static void writeError(OutputStream outputStream, StatusCode statusCode) throws IOException {

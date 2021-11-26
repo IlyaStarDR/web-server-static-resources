@@ -19,8 +19,7 @@ public class RequestHandler {
 
     public void handle() throws IOException {
         Request request = RequestParser.parse(bufferedReader);
-        try {
-            InputStream content = resourceReader.readResource(request.getUri());
+        try (InputStream content = resourceReader.readResource(request.getUri())) {
             ResponseWriter.writeSuccessResponse(content, outputStream);
         } catch (ServerException e) {
             ResponseWriter.writeError(outputStream, e.getStatusCode());
