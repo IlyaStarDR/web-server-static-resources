@@ -1,9 +1,14 @@
 package request;
 
+import exception.ServerException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import static exception.StatusCode.BAD_REQUEST;
+import static exception.StatusCode.METHOD_NOT_ALLOWED;
 
 public class RequestParser {
 
@@ -16,7 +21,13 @@ public class RequestParser {
 
     private static void injectUriAndMethod(BufferedReader bufferedReader, Request request) throws IOException {
         String uriAndMethodAndVersion = bufferedReader.readLine();
+        if (uriAndMethodAndVersion == null) {
+            throw new ServerException(BAD_REQUEST);
+        }
         String[] startLine = uriAndMethodAndVersion.split("\s");
+        if (!startLine[1].equals(HttpMethod.GET.toString())) {
+            throw new ServerException(METHOD_NOT_ALLOWED);
+        }
         request.setMethod(HttpMethod.valueOf(startLine[0].trim()));
         request.setUri(startLine[1].trim());
         request.setVersion(startLine[2].trim());
