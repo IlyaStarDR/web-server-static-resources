@@ -1,33 +1,29 @@
 package request;
 
+import exception.ServerException;
 import resource.ResourceReader;
 import response.ResponseWriter;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 
 public class RequestHandler {
     private final BufferedReader bufferedReader;
-    private final BufferedWriter bufferedWriter;
-    private final String webappPath;
+    private final OutputStream outputStream;
+    private final ResourceReader resourceReader;
 
-    public RequestHandler(BufferedReader bufferedReader, BufferedWriter bufferedWriter, String webappPath) {
+    public RequestHandler(BufferedReader bufferedReader, OutputStream outputStream, ResourceReader resourceReader) {
         this.bufferedReader = bufferedReader;
-        this.bufferedWriter = bufferedWriter;
-        this.webappPath = webappPath;
+        this.outputStream = outputStream;
+        this.resourceReader = resourceReader;
     }
 
     public void handle() throws IOException {
         Request request = RequestParser.parse(bufferedReader);
         try {
-            ResourceReader resourceReader = new ResourceReader();
-            resourceReader.setWebappPath(webappPath);
-            String content = resourceReader.readResource(request.getUri());
-            ResponseWriter.writeSuccessResponse(content, bufferedWriter);
-        } catch (FileNotFoundException e) {
-            ResponseWriter.writeNotFoundResponse(bufferedWriter);
+            InputStream content = resourceReader.readResource(request.getUri());
+            ResponseWriter.writeSuccessResponse(content, outputStream);
+        } catch (ServerException e) {
+            ResponseWriter.writeError(outputStream, e.getStatusCode());
         }
     }
 }

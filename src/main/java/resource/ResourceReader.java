@@ -1,23 +1,23 @@
 package resource;
 
+import exception.ServerException;
+
 import java.io.*;
 
-public class ResourceReader {
-    private String webappPath;
+import static exception.StatusCode.NOT_FOUND;
 
-    public String readResource(String uri) throws IOException {
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(new File(webappPath, uri)))) {
-            String currentLine;
-            StringBuilder content = new StringBuilder();
-            while ((currentLine = bufferedReader.readLine()) != null) {
-                content.append(currentLine);
-                content.append("\n");
-            }
-            return content.toString();
-        }
+public class ResourceReader {
+    private final String webappPath;
+
+    public ResourceReader(String webappPath) {
+        this.webappPath = webappPath;
     }
 
-    public void setWebappPath(String webappPath) {
-        this.webappPath = webappPath;
+    public InputStream readResource(String uri) {
+        try {
+            return new FileInputStream(new File(webappPath, uri));
+        } catch (FileNotFoundException e) {
+            throw new ServerException(NOT_FOUND);
+        }
     }
 }

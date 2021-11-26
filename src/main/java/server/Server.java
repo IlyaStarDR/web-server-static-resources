@@ -1,6 +1,8 @@
 package server;
 
 import request.RequestHandler;
+import resource.ResourceReader;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -15,8 +17,9 @@ public class Server {
             while (true) {
                 try (Socket socket = serverSocket.accept();
                      BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                     BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));) {
-                    RequestHandler requestHandler = new RequestHandler(bufferedReader, bufferedWriter, webappPath);
+                     OutputStream outputStream = socket.getOutputStream()) {
+                    ResourceReader resourceReader = new ResourceReader(webappPath);
+                    RequestHandler requestHandler = new RequestHandler(bufferedReader, outputStream, resourceReader);
                     requestHandler.handle();
                 }
             }
